@@ -5,18 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDTO {
 
-  private Long list;
   private Long id;
   private String name;
   private String description;
-
-  public Long getList() {
-    return list;
-  }
-
-  public void setList(Long list) {
-    this.list = list;
-  }
 
   public Long getId() {
     return id;
