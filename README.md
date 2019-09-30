@@ -33,7 +33,7 @@ CREATE TABLE public.lists (
 );
 CREATE TABLE public.items (
 	id bigserial NOT NULL,
-	list bigserial NOT NULL,
+	list bigint NOT NULL,
 	name varchar(100) NOT NULL,
 	description varchar(500) NOT NULL,
 	CONSTRAINT items_PK PRIMARY KEY (id),
