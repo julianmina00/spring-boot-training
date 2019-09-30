@@ -1,7 +1,7 @@
 package com.trainingsession.service.impl;
 
-import com.trainingsession.dto.ItemDTO;
-import com.trainingsession.dto.ListDTO;
+import com.trainingsession.model.dto.ItemDTO;
+import com.trainingsession.model.dto.ListDTO;
 import com.trainingsession.service.ListService;
 import java.util.ArrayList;
 import java.util.List;

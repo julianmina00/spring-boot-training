@@ -1,13 +1,16 @@
-package com.trainingsession.dto;
+package com.trainingsession.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemDTO {
+public class ListDTO {
 
   private Long id;
   private String name;
   private String description;
+  private List<ItemDTO> items = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -32,4 +35,16 @@ public class ItemDTO {
   public void setDescription(String description) {
     this.description = description;
   }
+
+  public List<ItemDTO> getItems() {
+    if(items == null){
+      items = new ArrayList<>();
+    }
+    return items;
+  }
+
+  public void setItems(List<ItemDTO> items) {
+    this.items = items;
+  }
+
 }
