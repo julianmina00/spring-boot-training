@@ -2,10 +2,18 @@ package com.trainingsession.repository;
 
 import com.trainingsession.model.entity.Item;
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ItemRepository extends CrudRepository<Item, Long> {
+@Repository
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
   List<Item> findByListId(Long listId);
+
+  //Optional<Item> findOneByListIdAndId(Long listId, Long id);
+  Item findOneByListIdAndId(Long listId, Long id);
+
+  void deleteByListId(Long listId);
 
 }
