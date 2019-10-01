@@ -1,134 +1,153 @@
 package com.trainingsession.service.impl;
 
-import com.trainingsession.dto.ItemDTO;
-import com.trainingsession.dto.ListDTO;
+import com.trainingsession.model.dto.ItemDTO;
+import com.trainingsession.model.dto.ListDTO;
+import com.trainingsession.model.entity.Item;
+import com.trainingsession.repository.ItemRepository;
+import com.trainingsession.repository.ListRepository;
+import com.trainingsession.service.Converter;
 import com.trainingsession.service.ListService;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("listService")
 public class ListServiceImpl implements ListService {
 
-  private Map<Long,ListDTO> listRecords = new ConcurrentHashMap<>();
-  private static long LIST_ID = 0L;
-  private static long ITEM_ID = 0L;
+  @Autowired
+  private ListRepository listRepository;
+
+  @Autowired
+  private ItemRepository itemRepository;
+
+  @Autowired
+  private Converter<com.trainingsession.model.entity.List, ListDTO> listConverter;
+
+  @Autowired
+  private Converter<Item, ItemDTO> itemConverter;
 
   @Override
   public List<ListDTO> getLists() {
-    return new ArrayList<>(listRecords.values());
+    return listConverter.convertAll(listRepository.findAll());
   }
 
   @Override
   public ListDTO getList(long id) {
-    return listRecords.get(id);
+    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(id);
+    return optionalList.map(list -> listConverter.convert(list)).orElse(null);
   }
 
   @Override
   public ListDTO createList(@NotNull ListDTO listDTO) {
-    long id = getListId();
-    listDTO.setId(id);
-    List<ItemDTO> items = listDTO.getItems();
-    items.forEach(item -> item.setId(getItemId()));
-    listRecords.put(id, listDTO);
-    return listRecords.get(id);
+    // persist data
+    com.trainingsession.model.entity.List createdList =
+        listRepository.save(listConverter.reverseConvert(listDTO));
+    List<Item> items = itemConverter.reverseConvertAll(listDTO.getItems());
+    items.forEach(item -> item.setListId(createdList.getId()));
+    List<Item> createdItems = itemRepository.saveAll(items);
+
+    // prepare response DTO
+    ListDTO responseDTO = listConverter.convert(createdList);
+    responseDTO.setItems(itemConverter.convertAll(createdItems));
+    return responseDTO;
   }
 
   @Override
   public ListDTO createList(@NotNull String name, String description) {
-    ListDTO list = new ListDTO();
-    list.setName(name);
-    list.setDescription(description);
-    return createList(list);
+    com.trainingsession.model.entity.List entity = new com.trainingsession.model.entity.List();
+    entity.setName(name);
+    entity.setDescription(description);
+    com.trainingsession.model.entity.List createdList = listRepository.save(entity);
+    return createList(listConverter.convert(createdList));
   }
-
 
   @Override
   public ListDTO updateList(long id, @NotNull String name, String description) {
-    ListDTO record = listRecords.get(id);
-    if(record != null) {
-      record.setName(name);
-      record.setDescription(description);
+    Optional<com.trainingsession.model.entity.List> record = listRepository.findById(id);
+    if (record.isPresent()) {
+      com.trainingsession.model.entity.List entity = record.get();
+      entity.setName(name);
+      entity.setDescription(description);
+      com.trainingsession.model.entity.List updated = listRepository.save(entity);
+      return listConverter.convert(updated);
     }
-    return record;
+    return null;
   }
 
   @Override
   public ListDTO deleteList(long id) {
-    ListDTO record = listRecords.get(id);
-    if(record != null){
-      listRecords.remove(id);
-    }
-    return record;
+    Optional<com.trainingsession.model.entity.List> record = listRepository.findById(id);
+    record.ifPresent(list -> listRepository.deleteById(id));
+    return record.map(list -> listConverter.convert(list)).orElse(null);
   }
+
+
   @Override
   public List<ItemDTO> getItems(long listId) {
-    ListDTO list = listRecords.get(listId);
-    return list != null ? list.getItems() : null;
+    List<Item> items = itemRepository.findByListId(listId);
+    return itemConverter.convertAll(items);
   }
 
   @Override
   public ListDTO addItem(long listId, @NotNull ItemDTO item) {
-    ListDTO list = listRecords.get(listId);
-    if(list != null){
-      item.setId(getItemId());
-      list.getItems().add(item);
-    }
-    return list;
+    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    optionalList.ifPresent(list -> {
+      Item entity = itemConverter.reverseConvert(item);
+      entity.setListId(listId);
+      itemRepository.save(entity);
+    });
+    return buildListDTO(listId, optionalList);
   }
 
   @Override
   public ListDTO addItems(long listId, @NotNull List<ItemDTO> items) {
-    ListDTO list = listRecords.get(listId);
-    if(list != null){
-      items.forEach(itemDTO -> itemDTO.setId(getItemId()));
-      list.getItems().addAll(items);
-    }
-    return list;
+    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    optionalList.ifPresent(list -> {
+      List<Item> entities = itemConverter.reverseConvertAll(items);
+      entities.forEach(item -> item.setListId(listId));
+      itemRepository.saveAll(entities);
+    });
+    return buildListDTO(listId, optionalList);
   }
 
   @Override
   public ListDTO updateItem(long listId, long itemId, @NotNull String name, String description) {
-    ListDTO list = listRecords.get(listId);
-    if(list != null){
-      List<ItemDTO> items = list.getItems();
-      ItemDTO toUpdate = items.stream().filter(itemDTO -> itemDTO.getId().equals(itemId))
-          .findFirst().orElse(null);
-      if(toUpdate == null){
-        return null;
-      }
-      toUpdate.setName(name);
-      toUpdate.setDescription(description);
-    }
-    return list;
+    Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
+    return optionalItem.map(item -> {
+      item.setName(name);
+      item.setDescription(description);
+      itemRepository.save(item);
+      return buildListDTO(item.getListId(), listRepository.findById(item.getListId()));
+    }).orElse(null);
   }
 
   @Override
   public ListDTO removeItem(long listId, long itemId) {
-    ListDTO list = listRecords.get(listId);
-    if(list != null){
-      list.getItems().removeIf(item -> item.getId().equals(itemId));
-    }
-    return list;
+    Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
+    return optionalItem.map(item -> {
+      itemRepository.deleteById(item.getId());
+      return buildListDTO(item.getListId(), listRepository.findById(item.getListId()));
+    }).orElse(null);
   }
 
   @Override
   public ListDTO removeAllItems(long listId) {
-    ListDTO list = listRecords.get(listId);
-    if(list != null){
-      list.getItems().clear();
-    }
-    return list;
+    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    return optionalList.map(list -> {
+      List<Item> items = itemRepository.findByListId(list.getId());
+      items.forEach(item -> itemRepository.deleteById(item.getId()));
+      return buildListDTO(listId, optionalList);
+    }).orElse(null);
   }
 
-  private static synchronized long getListId(){
-    return ++LIST_ID;
-  }
-
-  private static synchronized long getItemId(){
-    return ++ITEM_ID;
+  private ListDTO buildListDTO(long listId,
+      @NotNull Optional<com.trainingsession.model.entity.List> optionalList) {
+    return optionalList.map(list -> {
+      ListDTO listDTO = listConverter.convert(optionalList.get());
+      listDTO.setItems(itemConverter.convertAll(itemRepository.findByListId(listId)));
+      return listDTO;
+    }).orElse(null);
   }
 }

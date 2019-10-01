@@ -1,7 +1,7 @@
 package com.trainingsession.service;
 
-import com.trainingsession.dto.ItemDTO;
-import com.trainingsession.dto.ListDTO;
+import com.trainingsession.model.dto.ItemDTO;
+import com.trainingsession.model.dto.ListDTO;
 import java.util.List;
 
 public interface ListService {

@@ -1,13 +1,11 @@
 package com.trainingsession.rest;
 
 
-import com.trainingsession.dto.ItemDTO;
-import com.trainingsession.dto.ListDTO;
+import com.trainingsession.model.dto.ItemDTO;
+import com.trainingsession.model.dto.ListDTO;
 import com.trainingsession.service.ListService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Tag;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
