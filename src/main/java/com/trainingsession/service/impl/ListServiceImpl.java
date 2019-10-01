@@ -114,33 +114,36 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO updateItem(long listId, long itemId, @NotNull String name, String description) {
-    //Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
-    Optional<Item> optionalItem = Optional.ofNullable(itemRepository.findOneByListIdAndId(listId, itemId));
-    optionalItem.ifPresent(item -> {
+    Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
+    return optionalItem.map(item -> {
       item.setName(name);
       item.setDescription(description);
       itemRepository.save(item);
-    });
-    return buildListDTO(listId, listRepository.findById(listId));
+      return buildListDTO(item.getListId(), listRepository.findById(item.getListId()));
+    }).orElse(null);
   }
 
   @Override
   public ListDTO removeItem(long listId, long itemId) {
-    //Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
-    Optional<Item> optionalItem = Optional.ofNullable(itemRepository.findOneByListIdAndId(listId, itemId));
-    optionalItem.ifPresent(item -> itemRepository.deleteById(item.getId()));
-    return buildListDTO(listId, listRepository.findById(listId));
+    Optional<Item> optionalItem = itemRepository.findOneByListIdAndId(listId, itemId);
+    return optionalItem.map(item -> {
+      itemRepository.deleteById(item.getId());
+      return buildListDTO(item.getListId(), listRepository.findById(item.getListId()));
+    }).orElse(null);
   }
 
   @Override
   public ListDTO removeAllItems(long listId) {
     Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
-    optionalList.ifPresent(list -> itemRepository.deleteByListId(list.getId()));
-    return buildListDTO(listId, optionalList);
+    return optionalList.map(list -> {
+      List<Item> items = itemRepository.findByListId(list.getId());
+      items.forEach(item -> itemRepository.deleteById(item.getId()));
+      return buildListDTO(listId, optionalList);
+    }).orElse(null);
   }
 
   private ListDTO buildListDTO(long listId,
-      Optional<com.trainingsession.model.entity.List> optionalList) {
+      @NotNull Optional<com.trainingsession.model.entity.List> optionalList) {
     return optionalList.map(list -> {
       ListDTO listDTO = listConverter.convert(optionalList.get());
       listDTO.setItems(itemConverter.convertAll(itemRepository.findByListId(listId)));

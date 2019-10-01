@@ -11,9 +11,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
   List<Item> findByListId(Long listId);
 
-  //Optional<Item> findOneByListIdAndId(Long listId, Long id);
-  Item findOneByListIdAndId(Long listId, Long id);
-
-  void deleteByListId(Long listId);
+  Optional<Item> findOneByListIdAndId(Long listId, Long id);
 
 }
