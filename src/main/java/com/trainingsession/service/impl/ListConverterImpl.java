@@ -27,6 +27,8 @@ public class ListConverterImpl implements Converter<List, ListDTO> {
     dto.setId(entity.getId());
     dto.setName(entity.getName());
     dto.setDescription(entity.getDescription());
+    dto.setCreatedAt(entity.getCreatedAt());
+    dto.setUpdatedAt(entity.getUpdatedAt());
     java.util.List<Item> items = itemRepository.findByListId(entity.getId());
     dto.setItems(itemConverter.convertAll(items));
     return dto;
