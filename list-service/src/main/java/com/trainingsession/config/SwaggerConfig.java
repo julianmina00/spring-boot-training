@@ -23,7 +23,7 @@ public class SwaggerConfig {
   }
 
   private ApiInfo apiInfo() {
-    return new ApiInfo("Training Session Restful API", "This API provides the necessary endpoints for the training session", "API V0.0.1",
+    return new ApiInfo("List Service Restful API", "This API provides the necessary endpoints for the list service", "API V0.0.1",
         "Terms of service", new Contact("Training Team", "http://www.example.com", "email@company.com"),
         "API License","http://www.api-license.com", Collections.emptyList());
   }

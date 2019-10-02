@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.trainingsession.model.*")
 @EnableJpaRepositories("com.trainingsession.*")
 @ComponentScan("com.trainingsession.*")
-public class SpringBootTrainingApplication {
+public class ListServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootTrainingApplication.class, args);
+		SpringApplication.run(ListServiceApplication.class, args);
 	}
 
 }
