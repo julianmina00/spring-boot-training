@@ -23,7 +23,7 @@ public class PublishingRouteProcessor implements Processor {
 
     Invoice invoice = new Invoice();
     invoice.setNumber(fields[0]);
-    invoice.setAmount(fields[1]);
+    invoice.setTotal(fields[1]);
     invoice.setItems(Arrays.asList(items));
 
     String json = mapper.writeValueAsString(invoice);

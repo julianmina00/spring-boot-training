@@ -7,7 +7,7 @@ import lombok.Data;
 public class Invoice {
 
   private String number;
-  private String amount;
+  private String total;
   private List<String> items;
 
 }
