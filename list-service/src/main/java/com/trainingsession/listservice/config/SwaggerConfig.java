@@ -1,4 +1,4 @@
-package com.trainingsession.config;
+package com.trainingsession.listservice.config;
 
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class SwaggerConfig {
   @Bean
   public Docket api() {
     return new Docket(DocumentationType.SWAGGER_2).select()
-        .apis(RequestHandlerSelectors.basePackage("com.trainingsession.rest"))
+        .apis(RequestHandlerSelectors.basePackage("com.trainingsession.listservice.rest"))
         .paths(PathSelectors.regex("/*.*")).build().apiInfo(apiInfo());
   }
 

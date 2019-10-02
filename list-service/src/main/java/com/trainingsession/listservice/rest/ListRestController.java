@@ -1,9 +1,9 @@
-package com.trainingsession.rest;
+package com.trainingsession.listservice.rest;
 
 
-import com.trainingsession.model.dto.ItemDTO;
-import com.trainingsession.model.dto.ListDTO;
-import com.trainingsession.service.ListService;
+import com.trainingsession.listservice.model.dto.ItemDTO;
+import com.trainingsession.listservice.model.dto.ListDTO;
+import com.trainingsession.listservice.service.ListService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.trainingsession.model.entity;
+package com.trainingsession.listservice.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

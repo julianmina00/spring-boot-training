@@ -1,4 +1,4 @@
-package com.trainingsession.service;
+package com.trainingsession.listservice.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package com.trainingsession.app;
+package com.trainingsession.listservice.app;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,6 @@
-package com.trainingsession.repository;
+package com.trainingsession.listservice.repository;
 
-import com.trainingsession.model.entity.Item;
+import com.trainingsession.listservice.model.entity.Item;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

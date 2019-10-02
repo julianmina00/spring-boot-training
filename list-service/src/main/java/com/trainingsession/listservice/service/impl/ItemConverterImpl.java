@@ -1,8 +1,8 @@
-package com.trainingsession.service.impl;
+package com.trainingsession.listservice.service.impl;
 
-import com.trainingsession.model.dto.ItemDTO;
-import com.trainingsession.model.entity.Item;
-import com.trainingsession.service.Converter;
+import com.trainingsession.listservice.model.dto.ItemDTO;
+import com.trainingsession.listservice.model.entity.Item;
+import com.trainingsession.listservice.service.Converter;
 import org.springframework.stereotype.Component;
 
 @Component("itemConverter")

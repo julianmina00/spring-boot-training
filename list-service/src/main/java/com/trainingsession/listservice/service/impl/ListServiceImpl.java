@@ -1,12 +1,12 @@
-package com.trainingsession.service.impl;
+package com.trainingsession.listservice.service.impl;
 
-import com.trainingsession.model.dto.ItemDTO;
-import com.trainingsession.model.dto.ListDTO;
-import com.trainingsession.model.entity.Item;
-import com.trainingsession.repository.ItemRepository;
-import com.trainingsession.repository.ListRepository;
-import com.trainingsession.service.Converter;
-import com.trainingsession.service.ListService;
+import com.trainingsession.listservice.model.dto.ItemDTO;
+import com.trainingsession.listservice.model.dto.ListDTO;
+import com.trainingsession.listservice.model.entity.Item;
+import com.trainingsession.listservice.repository.ItemRepository;
+import com.trainingsession.listservice.repository.ListRepository;
+import com.trainingsession.listservice.service.Converter;
+import com.trainingsession.listservice.service.ListService;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class ListServiceImpl implements ListService {
   private ItemRepository itemRepository;
 
   @Autowired
-  private Converter<com.trainingsession.model.entity.List, ListDTO> listConverter;
+  private Converter<com.trainingsession.listservice.model.entity.List, ListDTO> listConverter;
 
   @Autowired
   private Converter<Item, ItemDTO> itemConverter;
@@ -35,14 +35,14 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO getList(long id) {
-    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(id);
+    Optional<com.trainingsession.listservice.model.entity.List> optionalList = listRepository.findById(id);
     return optionalList.map(list -> listConverter.convert(list)).orElse(null);
   }
 
   @Override
   public ListDTO createList(@NotNull ListDTO listDTO) {
     // persist data
-    com.trainingsession.model.entity.List createdList =
+    com.trainingsession.listservice.model.entity.List createdList =
         listRepository.save(listConverter.reverseConvert(listDTO));
     List<Item> items = itemConverter.reverseConvertAll(listDTO.getItems());
     items.forEach(item -> item.setListId(createdList.getId()));
@@ -56,21 +56,21 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO createList(@NotNull String name, String description) {
-    com.trainingsession.model.entity.List entity = new com.trainingsession.model.entity.List();
+    com.trainingsession.listservice.model.entity.List entity = new com.trainingsession.listservice.model.entity.List();
     entity.setName(name);
     entity.setDescription(description);
-    com.trainingsession.model.entity.List createdList = listRepository.save(entity);
+    com.trainingsession.listservice.model.entity.List createdList = listRepository.save(entity);
     return createList(listConverter.convert(createdList));
   }
 
   @Override
   public ListDTO updateList(long id, @NotNull String name, String description) {
-    Optional<com.trainingsession.model.entity.List> record = listRepository.findById(id);
+    Optional<com.trainingsession.listservice.model.entity.List> record = listRepository.findById(id);
     if (record.isPresent()) {
-      com.trainingsession.model.entity.List entity = record.get();
+      com.trainingsession.listservice.model.entity.List entity = record.get();
       entity.setName(name);
       entity.setDescription(description);
-      com.trainingsession.model.entity.List updated = listRepository.save(entity);
+      com.trainingsession.listservice.model.entity.List updated = listRepository.save(entity);
       return listConverter.convert(updated);
     }
     return null;
@@ -78,7 +78,7 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO deleteList(long id) {
-    Optional<com.trainingsession.model.entity.List> record = listRepository.findById(id);
+    Optional<com.trainingsession.listservice.model.entity.List> record = listRepository.findById(id);
     record.ifPresent(list -> listRepository.deleteById(id));
     return record.map(list -> listConverter.convert(list)).orElse(null);
   }
@@ -92,7 +92,7 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO addItem(long listId, @NotNull ItemDTO item) {
-    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    Optional<com.trainingsession.listservice.model.entity.List> optionalList = listRepository.findById(listId);
     optionalList.ifPresent(list -> {
       Item entity = itemConverter.reverseConvert(item);
       entity.setListId(listId);
@@ -103,7 +103,7 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO addItems(long listId, @NotNull List<ItemDTO> items) {
-    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    Optional<com.trainingsession.listservice.model.entity.List> optionalList = listRepository.findById(listId);
     optionalList.ifPresent(list -> {
       List<Item> entities = itemConverter.reverseConvertAll(items);
       entities.forEach(item -> item.setListId(listId));
@@ -134,7 +134,7 @@ public class ListServiceImpl implements ListService {
 
   @Override
   public ListDTO removeAllItems(long listId) {
-    Optional<com.trainingsession.model.entity.List> optionalList = listRepository.findById(listId);
+    Optional<com.trainingsession.listservice.model.entity.List> optionalList = listRepository.findById(listId);
     return optionalList.map(list -> {
       List<Item> items = itemRepository.findByListId(list.getId());
       items.forEach(item -> itemRepository.deleteById(item.getId()));
@@ -143,7 +143,7 @@ public class ListServiceImpl implements ListService {
   }
 
   private ListDTO buildListDTO(long listId,
-      @NotNull Optional<com.trainingsession.model.entity.List> optionalList) {
+      @NotNull Optional<com.trainingsession.listservice.model.entity.List> optionalList) {
     return optionalList.map(list -> {
       ListDTO listDTO = listConverter.convert(optionalList.get());
       listDTO.setItems(itemConverter.convertAll(itemRepository.findByListId(listId)));

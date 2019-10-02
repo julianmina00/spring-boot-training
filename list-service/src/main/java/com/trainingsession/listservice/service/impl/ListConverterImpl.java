@@ -1,11 +1,11 @@
-package com.trainingsession.service.impl;
+package com.trainingsession.listservice.service.impl;
 
-import com.trainingsession.model.dto.ItemDTO;
-import com.trainingsession.model.dto.ListDTO;
-import com.trainingsession.model.entity.Item;
-import com.trainingsession.model.entity.List;
-import com.trainingsession.repository.ItemRepository;
-import com.trainingsession.service.Converter;
+import com.trainingsession.listservice.model.dto.ItemDTO;
+import com.trainingsession.listservice.model.dto.ListDTO;
+import com.trainingsession.listservice.model.entity.Item;
+import com.trainingsession.listservice.model.entity.List;
+import com.trainingsession.listservice.repository.ItemRepository;
+import com.trainingsession.listservice.service.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
