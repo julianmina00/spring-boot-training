@@ -1,5 +1,3 @@
-package com.trainingsession.invoicepublisher.app;
-
 import java.util.Random;
 
 public class InvoiceGenerator {
@@ -21,7 +19,7 @@ public class InvoiceGenerator {
       invoices = 100;
     }
 
-    System.out.println("Generating "+invoices+" invoices");
+    // Generating invoices
     for (int i = 0; i < invoices ; i++) {
       int amountOfItems = random.nextInt(15);
       if(amountOfItems == 0){
@@ -29,7 +27,7 @@ public class InvoiceGenerator {
       }
       System.out.println(getInvoiceNumber().concat(":").concat(getTotal()).concat(":").concat(getItems(amountOfItems)));
     }
-    System.out.println("Invoices generated");
+    //Invoices generated
   }
 
   private static String getItems(int amount){
