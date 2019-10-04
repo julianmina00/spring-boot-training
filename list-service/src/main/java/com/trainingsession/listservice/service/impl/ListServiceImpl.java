@@ -10,11 +10,15 @@ import com.trainingsession.listservice.service.ListService;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("listService")
 public class ListServiceImpl implements ListService {
+
+  private static final Logger logger = LoggerFactory.getLogger(ListServiceImpl.class);
 
   @Autowired
   private ListRepository listRepository;
@@ -51,6 +55,7 @@ public class ListServiceImpl implements ListService {
     // prepare response DTO
     ListDTO responseDTO = listConverter.convert(createdList);
     responseDTO.setItems(itemConverter.convertAll(createdItems));
+    logger.info("Adding List: "+listDTO);
     return responseDTO;
   }
 
