@@ -21,7 +21,7 @@ public class InvoiceGenerator {
 
     // Generating invoices
     for (int i = 0; i < invoices ; i++) {
-      int amountOfItems = random.nextInt(15);
+      int amountOfItems = random.nextInt(50);
       if(amountOfItems == 0){
         amountOfItems = 7;
       }
